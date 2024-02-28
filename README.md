@@ -52,6 +52,7 @@ Buttons
 *  Start button does a gyro reset
   
  
-MAX Speed is set in SwerveSubsystem.java but might should be in Constants of course..
-see maximumSpeed = Units.feetToMeters(14.5);  is default.
+MAX Speed is now set in Constants , default was Units.feetToMeters(14.5), but changed to 6 or 8 to slow it down for testing.
+
+
 
