@@ -47,9 +47,9 @@ Buttons
 
 *  B lookRight     Face the robot right
 
-*  Back button locks wheels (so does disable for 10 secs)
+*  Back button does a gyro reset
 
-*  Start button does a gyro reset
+*  Start button might be coded later to lock wheels (also robot disable does same for 10 secs)
   
  
 MAX Speed is now set in Constants , default was Units.feetToMeters(14.5), but changed to 6 or 8 to slow it down for testing.

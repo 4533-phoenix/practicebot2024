@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
@@ -90,12 +92,37 @@ public class RobotContainer
    * named factories in {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
    * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+   * XBOX Map seems to be 
+   * Leftstick X axis 0 , -1 to left, 1 to right. 
+    Leftstick Y axis 1 , -1 to forward, 1 to rear 
+    Left Trigger is axis 2 (analog like a stick axis) 0 when not pressed, 1 when pressed. 
+    Right Trigger is axis 3 (analog like a stick axis) 0 when not pressed, 1 when pressed. 
+    Rightstick X axis 4 , -1 to left, 1 to right. 
+    Rightstick Y axis 5 , -1 to forward, 1 to rear 
+    Button A = button 1 (note button numbering is assuming start at 1 and increment ) 
+    Button B = button 2 
+    Button X = button 3 
+    Button Y = button 4 
+    Button LB = button 5  (aka Left Bump )
+    Button RB = button 6 
+    Button BACK = button 7 
+    Button START = button 8 
+    Button LSTICKCENTER = button 9 (aka leftstick?)
+    Button RSTICKCENTER = button 10 
+    POV yields 0,45,90,...,315,0 in the 8 directions. 
+
    */
   private void configureBindings()
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    driverXbox.a().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+    //new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    //rem out these for now
+    //driverXbox.back().onTrue((Commands.runOnce(drivebase::zeroGyro))); // try to zero gyro on 'back' button
+    //driverXbox.rightTrigger().onTrue(Commands.run(drivebase::lock));  //JEC might lock drivebase on right stick center button pressed
+    //driverXbox.rightTrigger().whileTrue(Commands.run(drivebase::lock));  //JEC might lock drivebase on right stick center button pressed
+    //notwork: new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase))); //JEC unremmed, changed 3 to 7 back button
+ 
     //driverXbox.x().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
     // driverXbox.b().whileTrue(
     //     Commands.deferredProxy(() -> drivebase.driveToPose(
