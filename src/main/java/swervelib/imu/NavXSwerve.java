@@ -106,8 +106,8 @@ public class NavXSwerve extends SwerveIMU
   @Override
   public void factoryDefault()
   {
-    // gyro.reset(); // Reported to be slow
-    offset = gyro.getRotation3d();
+     gyro.reset(); // Reported to be slow  //jec try this
+    //offset = gyro.getRotation3d(); //jec defauult
   }
 
   /**
@@ -157,7 +157,9 @@ public class NavXSwerve extends SwerveIMU
   @Override
   public Rotation3d getRotation3d()
   {
-    return gyro.getRotation3d().minus(offset);
+   // return getRawRotation3d().minus(offset);
+    //return gyro.getRotation3d().minus(offset); //JEC put this back in, how did it fall out ? 
+    return getRawRotation3d().minus(offset); //JEC try thiss
   }
 
   /**

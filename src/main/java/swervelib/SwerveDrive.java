@@ -317,7 +317,9 @@ public class SwerveDrive
    */
   public Rotation2d getOdometryHeading()
   {
+    // JEC says this might e issue
     return swerveDrivePoseEstimator.getEstimatedPosition().getRotation();
+    //return swerveDrive.getYaw();//jec try this
   }
 
   /**
@@ -350,6 +352,7 @@ public class SwerveDrive
   public void driveFieldOriented(ChassisSpeeds velocity)
   {
     ChassisSpeeds fieldOrientedVelocity = ChassisSpeeds.fromFieldRelativeSpeeds(velocity, getOdometryHeading());
+    //ChassisSpeeds fieldOrientedVelocity = ChassisSpeeds.fromFieldRelativeSpeeds(velocity, swerveDrive.getYaw()); // jec says try 
     drive(fieldOrientedVelocity);
   }
 
@@ -450,8 +453,8 @@ public class SwerveDrive
 
   /**
    * The primary method for controlling the drivebase. Takes a {@link ChassisSpeeds}, and calculates and commands module
-   * states accordingly. Can use either open-loop or closed-loop velocity control for the wheel velocities. Also has
-   * field- and robot-relative modes, which affect how the translation vector is used.
+   * states accordingly. Can use either open-loop or closed-loop velocity control for the wheel velocities. Applies
+   * heading correction if enabled and necessary.
    *
    * @param velocity               The chassis speeds to set the robot to achieve.
    * @param isOpenLoop             Whether to use closed-loop velocity control. Set to true to disable closed-loop.
@@ -547,7 +550,7 @@ public class SwerveDrive
   }
 
   /**
-   * Set the module states (azimuth and velocity) directly. Used primarily for auto pathing.
+   * Set the module states (azimuth and velocity) directly.
    *
    * @param desiredStates A list of SwerveModuleStates to send to the modules.
    * @param isOpenLoop    Whether to use closed-loop velocity control. Set to true to disable closed-loop.
@@ -839,9 +842,9 @@ public class SwerveDrive
       module.maxSpeed = maximumSpeed;
       if (updateModuleFeedforward)
       {
-        module.feedforward = SwerveMath.createDriveFeedforward(optimalVoltage,
-                                                               maximumSpeed,
-                                                               swerveDriveConfiguration.physicalCharacteristics.wheelGripCoefficientOfFriction);
+        module.setFeedforward(SwerveMath.createDriveFeedforward(optimalVoltage,
+                                                                maximumSpeed,
+                                                                swerveDriveConfiguration.physicalCharacteristics.wheelGripCoefficientOfFriction));
       }
     }
   }
@@ -851,7 +854,7 @@ public class SwerveDrive
    * {@link SwerveDrive#setRawModuleStates(SwerveModuleState[], boolean)} function and
    * {@link SwerveController#getTargetSpeeds(double, double, double, double, double)} functions. This function overrides
    * what was placed in the JSON and could damage your motor/robot if set too high or unachievable rates. Overwrites the
-   * {@link SwerveModule#feedforward}.
+   * {@link SwerveModule#setFeedforward(SimpleMotorFeedforward)}.
    *
    * @param maximumSpeed Maximum speed for the drive motors in meters / second.
    */
@@ -908,13 +911,13 @@ public class SwerveDrive
   /**
    * Setup the swerve module feedforward.
    *
-   * @param feedforward Feedforward for the drive motor on swerve modules.
+   * @param driveFeedforward Feedforward for the drive motor on swerve modules.
    */
-  public void replaceSwerveModuleFeedforward(SimpleMotorFeedforward feedforward)
+  public void replaceSwerveModuleFeedforward(SimpleMotorFeedforward driveFeedforward)
   {
     for (SwerveModule swerveModule : swerveModules)
     {
-      swerveModule.feedforward = feedforward;
+      swerveModule.setFeedforward(driveFeedforward);
     }
   }
 
@@ -1114,7 +1117,7 @@ public class SwerveDrive
   {
     for (SwerveModule module : swerveModules)
     {
-      module.configuration.driveMotor.setPosition(0);
+      module.getDriveMotor().setPosition(0);
     }
   }
 
